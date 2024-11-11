@@ -46,6 +46,9 @@ def read_puzzle(filename: str):
     :return: width, height, puzzle as dict
     """
     ret = {}
+    if not os.path.exists(filename):
+        print('Puzzle does not exist')
+        exit(0)
     lines = open(filename, 'r').readlines()
     lines = [line.strip() for line in lines]
     assert len(set([len(line) for line in lines])) == 1, 'Ungültiges Puzzle'
@@ -329,6 +332,9 @@ if __name__ == '__main__':
     if not args.s:
         tries, solutions = solve(puzz, not args.f, args.d)
     else:
+        if not os.path.exists(args.s):
+            print('Solution file does not exist')
+            exit(0)
         solutions = [json.loads(open(args.s, 'r').read())]
 
     if len(solutions) == 0:
