@@ -147,6 +147,9 @@ def fall(puzzle: dict):
                     newpuzz[(x,y)] = newpuzz.pop((x,temp_y))
                     fallen = True
                     break
+                # If there is a wall, stop. Otherwise tiles will fall through the wall
+                if newpuzz.get((x,temp_y), ' ') in walls:
+                    break
     return newpuzz, fallen
 
 
