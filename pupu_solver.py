@@ -6,10 +6,14 @@ import argparse
 import os
 import json
 
-VERSION = '0.1'
+VERSION = '0.2'
 tiles = ['H', 'D', 'T', 'R', '1', 'S', '2', 'F']
 glass = ['G']
 walls = ['#', 'P']
+transtable = {' ': '.', '#': 'H', '$': 'D', '%': 'T', '&': 'R', "'": '1', '(': 'S', ')': '2', '*': 'F', '+': 'G',
+              ',': '#', '9': 'P', ':': 'P', '<': 'P', '=': 'P', '>': 'P', 'A': 'P', 'B': 'P', 'C': 'P', 'D': 'P',
+              'E': 'P', 'F': 'P', 'G': 'P', 'H': 'P', 'I': 'P', 'J': 'P', 'K': 'P', 'L': 'P', 'M': 'P', 'N': 'P',
+              'O': 'P'}
 IMAGE = b'x\x9c\xed\xd9;N\xc40\x10\x06\xe0\xff$\x9c\x80\x8a\x1a$*.@C\x1d\x8e@AG\xb77\xe0\x144[r\x128\x05\x1d\xa2^' \
         b'\xc2:;\x9a\xccx\xc6c\xc7\x8b\x10\xd9\x91\xb5J\x1c\xe3\x05\xfci\xfc\x08\xf0\x13\xaf\xf7gT\xc0\xc2\xaa\x171' \
         b'\xbc]\x8c\xc5i \xe2\xe5\xfak,\x91\x96\x8f\xb7\xb2\xf8\xb1\xdb\xdd\x88"\x1a\x9c_}T\x15\xfa\xc1g7\xa8\xd9\xd3' \
@@ -30,7 +34,32 @@ IMAGE = b'x\x9c\xed\xd9;N\xc40\x10\x06\xe0\xff$\x9c\x80\x8a\x1a$*.@C\x1d\x8e@AG\
 TITLESIZE = 40
 
 
+def convert_level(level: list) -> list:
+    """
+    Convert level from SEQ-format
+    :param level: SEQ-format
+    :return: editor-format
+    """
+    # Strip first line (title of level)
+    level.pop(0)
+    # Strip all quotation marks on line begin and end
+    level = [l.strip('"') for l in level]
+    # convert lines
+    ret = []
+    for line in level:
+        new_line = ''
+        for c in line:
+            new_line += transtable[c]
+        ret.append(new_line)
+    return ret
+
+
 def check_zoom(value):
+    """
+    Check if command line parameter "ZOOM" is valid
+    :param value: value to check
+    :return: zoom value if valid
+    """
     try:
         value = int(value)
         if not 0 < value <= 10:
@@ -51,6 +80,9 @@ def read_puzzle(filename: str):
         exit(0)
     lines = open(filename, 'r').readlines()
     lines = [line.strip() for line in lines]
+    # prüfen, ob SEQ-Datei
+    if lines[0][0] == '"':
+        lines = convert_level(lines)
     assert len(set([len(line) for line in lines])) == 1, 'Ungültiges Puzzle'
     for y, x in itertools.product(range(len(lines)), range(len(lines[0]))):
         if lines[y][x] == '.': continue
@@ -299,7 +331,7 @@ def get_best_solution(solutions: list[list]) -> list:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'Solver for PUPU-puzzles v{VERSION}. Written by 64erGrufti in Nov. 2024.\n'
-                                                 'The file has to be in the format:\n'
+                                                 'The file has to be in the level editor format:\n'
                                                  'PPPPPPP\n'
                                                  'P#..2#P\n'
                                                  'P#.2R#P\n'
@@ -310,6 +342,7 @@ if __name__ == '__main__':
                                                  'T: Triangle   R: Ring     1: Cross#1\n'
                                                  'S: Sandglass  2: Cross#2  F: Frame\n'
                                                  'G: Glass      #: Wall     P: Pattern\n\n'
+                                                 'or a SEQ-file from the PUPU-disk\n\n'
                                                  'Navigate with cursor right and left through the solution. ESC to exit',
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('puzzle', help='Textfile with puzzle')
