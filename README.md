@@ -36,6 +36,15 @@ durchprobiert. Dann wird die Lösung mit den wenigsten Zügen herausgesucht und 
 Rätsel kann die Suche eine Weile dauern. Deshalb ist es ist auch möglich, mit dem Parameter `-f` die erste gefundene
 Lösung anzuzeigen. Diese ist dann natürlich nicht optimiert.
 
+Das Programm verschiebt jeden Stein nach links und rechts (soweit möglich) und speichert den daraus resultierenden
+Zustand, falls er nicht schon mal vorhanden war, für die weitere Verarbeitung in eine Warteschlange. Das läuft so
+lange, bis das Level gewonnen oder verloren ist (von einer Variante nur noch 1 Stein übrig ist).  
+
+Im Debugmodus wird jeder Schritt dargestellt, im Normalmodus nur jeder 10.000ste. Der Debugmodus ist natürlich
+wesentlich langsamer. Dabei wird das aktuell berechnete Bild und oberhalb 2 Informationen dargestellt. Der erste Wert
+gibt die Anzahl der noch weiter zu untersuchenden Bildschirme in der Warteschlange an, die zweite Zahl, wieviele unterschiedliche
+Bildschirme schon abgearbeitet wurden.
+
 ![PUPU-Solver](image/solver.png)
 
 Oberhalb der Grafik wird der nächste Zug in der Form X:`pos`/Y:`pos` `Richtung` angezeigt. Dabei gbt `pos`die Position
@@ -56,8 +65,8 @@ was die Zeit dür eine erneute Berechnung erspart.
 ```
 usage: pupu_solver.py [-h] [-z FACTOR] [-s FILE] [-d] [-f] puzzle
 
-Solver for PUPU-puzzles v0.1. Written by 64erGrufti in Nov. 2024.
-The file has to be in the format:
+Solver for PUPU-puzzles v0.3.1. Written by 64erGrufti in Nov. 2024.
+The file has to be in the level editor format:
 PPPPPPP
 P#..2#P
 P#.2R#P
@@ -70,6 +79,8 @@ T: Triangle   R: Ring     1: Cross#1
 S: Sandglass  2: Cross#2  F: Frame
 G: Glass      #: Wall     P: Pattern
 
+or a SEQ-file from the PUPU-disk
+
 Navigate with cursor right and left through the solution. ESC to exit
 
 positional arguments:
@@ -81,5 +92,4 @@ options:
   -s FILE     Display already calculated solution
   -d          debug
   -f          Show the first found solution
-              (otherwise the shortest of all possible solutions is shown)
-```
+              (otherwise the shortest of all possible solutions is shown)```

@@ -5,8 +5,9 @@ import zlib
 import argparse
 import os
 import json
+import time
 
-VERSION = '0.2'
+VERSION = '0.3.1'
 tiles = ['H', 'D', 'T', 'R', '1', 'S', '2', 'F']
 glass = ['G']
 walls = ['#', 'P']
@@ -291,6 +292,7 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
     queue = [[puzzle, []]]
     hashes = {gen_hash(puzzle): []}
     solutions = []
+    co = 0
     while queue:
         puzz, moves = queue.pop()
         for (x,y), tile in puzz.items():
@@ -320,7 +322,10 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
                             if not loosed:
                                 hashes[newhash] = moves
                                 queue.append([newpuzz, newmoves])
-                                if debug: paint(newpuzz, f'{str(len(queue))}/{len(hashes)}')
+                                if debug or co % 10_000 == 0:
+                                    paint(newpuzz, f'{str(len(queue))}/{len(hashes)}')
+                                    co = 0
+                                co += 1
     return len(hashes), solutions
 
 
@@ -366,7 +371,10 @@ if __name__ == '__main__':
     window = pg.display.set_mode(size)
 
     if not args.s:
+        start_time = time.time()
         tries, solutions = solve(puzz, not args.f, args.d)
+        end_time = time.time()
+        print(f'Solution found in {end_time-start_time:2f} seconds')
     else:
         if not os.path.exists(args.s):
             print('Solution file does not exist')
