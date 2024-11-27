@@ -7,7 +7,7 @@ import os
 import json
 import time
 
-VERSION = '0.3.1'
+VERSION = '0.3.2'
 tiles = ['H', 'D', 'T', 'R', '1', 'S', '2', 'F']
 glass = ['G']
 walls = ['#', 'P']
@@ -241,7 +241,7 @@ def check(puzzle: dict):
     for t in tiles:
         if game_tiles.count(t) > 0: won = False
         if game_tiles.count(t) == 1: loose = True
-        if won == False or loose == True: break
+        if won == False and loose == True: break
     return won, loose
 
 
@@ -292,7 +292,7 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
     queue = [[puzzle, []]]
     hashes = {gen_hash(puzzle): []}
     solutions = []
-    co = 0
+    co = 0 # counter for steps
     while queue:
         puzz, moves = queue.pop()
         for (x,y), tile in puzz.items():
@@ -323,7 +323,7 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
                                 hashes[newhash] = moves
                                 queue.append([newpuzz, newmoves])
                                 if debug or co % 10_000 == 0:
-                                    paint(newpuzz, f'{str(len(queue))}/{len(hashes)}')
+                                    paint(newpuzz, f'{str(len(queue))} / {len(hashes)}')
                                     co = 0
                                 co += 1
     return len(hashes), solutions
