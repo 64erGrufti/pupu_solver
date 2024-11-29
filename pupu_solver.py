@@ -6,8 +6,9 @@ import argparse
 import os
 import json
 import time
+from collections import Counter
 
-VERSION = '0.3.2'
+VERSION = '0.3.3'
 tiles = ['H', 'D', 'T', 'R', '1', 'S', '2', 'F']
 glass = ['G']
 walls = ['#', 'P']
@@ -231,18 +232,23 @@ def fall_and_delete(puzzle: dict) -> dict:
 
 def check(puzzle: dict):
     """
-    Check if puzzle is won or loosed
+    Check if puzzle is won or losed
     :param puzzle: Puzzle
-    :return: win, loose
+    :return: win, lose
     """
-    game_tiles = [t for t in puzzle.values()]
+    game_tiles = Counter(puzzle.values())
+    if len([tile for tile in game_tiles if tile in tiles]) == 0: return True, False
+    if 1 in game_tiles.values(): return False, True
+    return False, False
+
     won = True
-    loose = False
+    game_tiles = [t for t in puzzle.values()]
+    lose = False
     for t in tiles:
         if game_tiles.count(t) > 0: won = False
-        if game_tiles.count(t) == 1: loose = True
-        if won == False and loose == True: break
-    return won, loose
+        if game_tiles.count(t) == 1: lose = True
+        if lose == True: break
+    return won, lose
 
 
 def show_solution(puzzle: dict, solutions: list):
@@ -312,14 +318,14 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
                             if len(newmoves) < len(hashes[newhash]): del hashes[newhash]
                         if not newhash in hashes:
                             newpuzz = fall_and_delete(newpuzz)
-                            won, loosed = check(newpuzz)
+                            won, losed = check(newpuzz)
                             if won:
                                 solutions.append(newmoves)
                                 if all_solutions:
                                     continue
                                 else:
                                     return len(hashes), [newmoves]
-                            if not loosed:
+                            if not losed:
                                 hashes[newhash] = moves
                                 queue.append([newpuzz, newmoves])
                                 if debug or co % 10_000 == 0:
