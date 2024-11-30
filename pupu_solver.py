@@ -7,6 +7,7 @@ import os
 import json
 import time
 from collections import Counter
+import sortedcontainers
 
 VERSION = '0.3.3'
 tiles = ['H', 'D', 'T', 'R', '1', 'S', '2', 'F']
@@ -285,12 +286,12 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
     :param debug: Show debug
     :return: number of tries, [list of solutions]
     """
-    queue = [[puzzle, []]]
+    queue = sortedcontainers.SortedList([(len(puzzle), puzzle, [])], key=lambda item: item[0])
     hashes = {gen_hash(puzzle): []}
     solutions = []
     co = 0 # counter for steps
     while queue:
-        puzz, moves = queue.pop()
+        _, puzz, moves = queue.pop(0)
         for (x,y), tile in puzz.items():
             for ereignis in pg.event.get():
                 if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_ESCAPE: quit()
@@ -319,9 +320,10 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
                                     return len(hashes), [newmoves]
                             if not losed:
                                 hashes[newhash] = moves
-                                queue.append([newpuzz, newmoves])
+                                #queue.append([(len(newpuzz),newpuzz, newmoves)])
+                                queue.add((len(newpuzz), newpuzz, newmoves))
                                 if debug or co % 10_000 == 0:
-                                    paint(newpuzz, f'{str(len(queue))} / {len(hashes)}')
+                                    paint(newpuzz, f'{str(len(solutions))} / {str(len(queue))} / {len(hashes)}')
                                     co = 0
                                 co += 1
     return len(hashes), solutions
