@@ -55,7 +55,6 @@ def convert_level(level: list) -> list:
         ret.append(new_line)
     return ret
 
-
 def check_zoom(value):
     """
     Check if command line parameter "ZOOM" is valid
@@ -90,7 +89,6 @@ def read_puzzle(filename: str):
         if lines[y][x] == '.': continue
         ret[(x,y)] = lines[y][x]
     return len(lines[0]), len(lines), ret
-
 
 def paint(puzzle: dict, text: str = None, movement: tuple = None):
     """
@@ -139,7 +137,6 @@ def paint(puzzle: dict, text: str = None, movement: tuple = None):
             if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_ESCAPE: quit()
             if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_RETURN: return
 
-
 def gen_hash(puzzle: dict) -> str:
     """
     Generate MD5 of the puzzle
@@ -148,7 +145,6 @@ def gen_hash(puzzle: dict) -> str:
     """
     puzzle = dict(sorted(puzzle.items()))
     return hashlib.md5(str(puzzle).encode()).hexdigest()
-
 
 def gen_move_string(x: int, y: int, direction: str) -> str:
     """
@@ -160,7 +156,6 @@ def gen_move_string(x: int, y: int, direction: str) -> str:
     """
     ret = f'{x:02}{y:02}{direction}'
     return ret
-
 
 def fall(puzzle: dict):
     """
@@ -185,7 +180,6 @@ def fall(puzzle: dict):
                 if newpuzz.get((x,temp_y), ' ') in walls:
                     break
     return newpuzz, fallen
-
 
 def delete(puzzle: dict):
     """
@@ -212,7 +206,6 @@ def delete(puzzle: dict):
         newpuzz.pop(d)
     return newpuzz, deleted
 
-
 def fall_and_delete(puzzle: dict) -> dict:
     """
     Let fall all possible parts and delete neighbours
@@ -228,7 +221,6 @@ def fall_and_delete(puzzle: dict) -> dict:
         if not deleted: break
         newpuzz, fallen = fall(newpuzz)
     return newpuzz
-
 
 def check(puzzle: dict):
     """
@@ -249,7 +241,6 @@ def check(puzzle: dict):
         if game_tiles.count(t) == 1: lose = True
         if lose == True: break
     return won, lose
-
 
 def show_solution(puzzle: dict, solutions: list):
     """
@@ -286,7 +277,6 @@ def show_solution(puzzle: dict, solutions: list):
             if ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_LEFT:
                 if screen_num > 0: screen_num -= 1
 
-
 def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
     """
     Solve the puzzle
@@ -306,18 +296,20 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
                 if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_ESCAPE: quit()
             if tile in tiles or tile in glass:
                 for diff_x, direction in [(-1, 'L'), (1, 'R')]:
-                    # Step left
+                    # Step left/right
                     if not (x + diff_x,y) in puzz:
                         newpuzz = puzz.copy()
                         newpuzz[(x + diff_x,y)] = newpuzz.pop((x,y))
+                        newpuzz = fall_and_delete(newpuzz)
                         newhash = gen_hash(newpuzz)
                         newmoves = moves.copy()
                         newmoves.append((x, y, direction))
                         if newhash in hashes:
                             # If old hash was reached with more moves, delete it
-                            if len(newmoves) < len(hashes[newhash]): del hashes[newhash]
+                            if len(newmoves) < len(hashes[newhash]):
+                                hashes[newhash] = newmoves
+                                continue
                         if not newhash in hashes:
-                            newpuzz = fall_and_delete(newpuzz)
                             won, losed = check(newpuzz)
                             if won:
                                 solutions.append(newmoves)
@@ -333,7 +325,6 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
                                     co = 0
                                 co += 1
     return len(hashes), solutions
-
 
 def get_best_solution(solutions: list[list]) -> list:
     counts = [len(s) for s in solutions]
