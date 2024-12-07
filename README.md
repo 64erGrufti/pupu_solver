@@ -34,20 +34,23 @@ PUPU-Solver kann auch Rätsel lösen, die nicht der Größe 10x10 von PUPU entsp
 In der Defaulteinstellung wird das Fenster mit 5-facher Vergrößerung dargestellt und alle möglichen Varianten
 durchprobiert. Dann wird die Lösung mit den wenigsten Zügen herausgesucht und präsentiert. Bei einem sehr komplizierten
 Rätsel kann die Suche eine Weile dauern. Deshalb ist es ist auch möglich, mit dem Parameter `-f` die erste gefundene
-Lösung anzuzeigen. Diese ist dann natürlich nicht optimiert.
+Lösung anzuzeigen. Diese ist dann natürlich nicht optimiert. Man kann die Suche auch mit `ESC` abbrechen, dann wird aus
+den bereits gefundenen Lösungsmöglichkeiten, die effektivste herausgesucht und präsenteiert.
 
 Das Programm verschiebt jeden Stein nach links und rechts (soweit möglich) und speichert den daraus resultierenden
 Zustand, falls er nicht schon mal vorhanden war, für die weitere Verarbeitung in eine Warteschlange. Das läuft so
-lange, bis das Level gewonnen oder verloren ist (von einer Variante nur noch 1 Stein übrig ist).  
+lange, bis das Level gewonnen oder verloren ist (von einer Variante nur noch 1 Stein übrig ist). Ist es gewonnen,
+werden die benötigten Züge gespeichert. Zum Schluss wird die Lösung herausgesucht, die die wenigsten Züge benötit.  
 
 Im Debugmodus wird jeder Schritt dargestellt, im Normalmodus nur jeder 10.000ste. Der Debugmodus ist natürlich
-wesentlich langsamer. Dabei wird das aktuell berechnete Bild und oberhalb 2 Informationen dargestellt. Der erste Wert
-gibt die Anzahl der noch weiter zu untersuchenden Bildschirme in der Warteschlange an, die zweite Zahl, wieviele unterschiedliche
+wesentlich langsamer. Dabei wird das aktuell berechnete Bild und oberhalb 3 Informationen dargestellt. Der erste Wert
+gibt die Anzahl der bereits gefundenen möglichen Lösungen an, der zweite Wert gibt die Anzahl der noch weiter zu
+untersuchenden Bildschirme in der Warteschlange an, die dritte Zahl, wieviele unterschiedliche
 Bildschirme schon abgearbeitet wurden.
 
 ![PUPU-Solver](image/solver.png)
 
-Oberhalb der Grafik wird der nächste Zug in der Form X:`pos`/Y:`pos` `Richtung` angezeigt. Dabei gbt `pos`die Position
+Oberhalb der Grafik wird der nächste Zug in der Form `X:pos`/`Y:pos` `Richtung` angezeigt. Dabei gbt `pos`die Position
 des zu bewegenden Steines an und `Richtung` die Richtung, in welche er bewegt werden muss. Außerdem wird das mit einer
 grünen Linie in der Grafik dargestellt.
 
