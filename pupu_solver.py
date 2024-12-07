@@ -1,3 +1,5 @@
+import sys
+
 import pygame as pg, itertools
 import pygame.transform
 import hashlib
@@ -135,7 +137,7 @@ def paint(puzzle: dict, text: str = None, movement: tuple = None):
     return
     while True:
         for ereignis in pg.event.get():
-            if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_ESCAPE: quit()
+            if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_ESCAPE: sys.exit()
             if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_RETURN: return
 
 def gen_hash(puzzle: dict) -> str:
@@ -272,7 +274,7 @@ def show_solution(puzzle: dict, solutions: list):
     while True:
         paint(screens[screen_num], newsolutions_text[screen_num], temp_solutions[screen_num])
         for ereignis in pg.event.get():
-            if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_ESCAPE: quit()
+            if ereignis.type == pg.QUIT or ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_ESCAPE: sys.exit()
             if ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_RIGHT:
                 if screen_num < len(screens)-1: screen_num += 1
             if ereignis.type == pg.KEYDOWN and ereignis.key == pg.K_LEFT:
