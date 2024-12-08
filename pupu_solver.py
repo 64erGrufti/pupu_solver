@@ -11,7 +11,7 @@ import time
 from collections import Counter
 import sortedcontainers
 
-VERSION = '0.3.4'
+VERSION = '0.3.5'
 tiles = ['H', 'D', 'T', 'R', '1', 'S', '2', 'F']
 glass = ['G']
 walls = ['#', 'P']
@@ -103,6 +103,7 @@ def paint(puzzle: dict, text: str = None, movement: tuple = None):
     """
     global size
     window.fill('black')
+    movable_tiles = tiles + glass
 
     #Paint text
     myfont = pg.font.SysFont('Arial', 12 * ZOOM)
@@ -118,7 +119,7 @@ def paint(puzzle: dict, text: str = None, movement: tuple = None):
         if x == 5 and y == 0:
             pass
         if tile in tiles or tile in glass:
-            number = tiles.index(tile)
+            number = movable_tiles.index(tile)
         elif tile in walls:
             number = walls.index(tile) + 9
         else:
@@ -233,6 +234,8 @@ def check(puzzle: dict):
     """
     game_tiles = Counter(puzzle.values())
     if len([tile for tile in game_tiles if tile in tiles]) == 0: return True, False
+    for tile in glass:
+        game_tiles.pop(tile, '')
     if 1 in game_tiles.values(): return False, True
     return False, False
 
@@ -288,6 +291,8 @@ def solve(puzzle: dict, all_solutions: bool = False, debug: bool = False):
     :param debug: Show debug
     :return: number of tries, [list of solutions]
     """
+
+    #puzzle = fall_and_delete(puzzle)
     queue = sortedcontainers.SortedList([(len(puzzle), puzzle, [])], key=lambda item: item[0])
     hashes = {gen_hash(puzzle): []}
     solutions = []
