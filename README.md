@@ -27,7 +27,11 @@ P#R2R#P
 P#1R##P
 PPPPPPP
 ```
-PUPU-Solver kann auch Rätsel lösen, die nicht der Größe 10x10 von PUPU entsprechen.
+PUPU-Solver kann auch Rätsel lösen, die nicht der Größe 12x12 von PUPU entsprechen.
+
+Es kann auch direkt eine SEQ-Datei von Pupu übergeben werden. Diese kann z.B. mit
+[DirMaster](https://style64.org/dirmaster) extrahiert werden. Dabei ist zwingend notwendig, dass der <u>Levelname auch
+in Anführungszeichen</u> steht! 
 
 ### Das Programmfenster
 
@@ -43,10 +47,16 @@ lange, bis das Level gewonnen oder verloren ist (von einer Variante nur noch 1 S
 werden die benötigten Züge gespeichert. Zum Schluss wird die Lösung herausgesucht, die die wenigsten Züge benötit.  
 
 Im Debugmodus wird jeder Schritt dargestellt, im Normalmodus nur jeder 10.000ste. Der Debugmodus ist natürlich
-wesentlich langsamer. Dabei wird das aktuell berechnete Bild und oberhalb 3 Informationen dargestellt. Der erste Wert
-gibt die Anzahl der bereits gefundenen möglichen Lösungen an, der zweite Wert gibt die Anzahl der noch weiter zu
-untersuchenden Bildschirme in der Warteschlange an, die dritte Zahl, wieviele unterschiedliche
-Bildschirme schon abgearbeitet wurden.
+wesentlich langsamer. Es wird das aktuell berechnete Bild und oberhalb 3 Informationen dargestellt. Der erste Wert
+gibt die <span style="color:lightgreen;background-color:black">Anzahl der bereits gefundenen möglichen Lösungen</span>
+an, der zweite Wert gibt die <span style="color:green;background-color:black">Anzahl der noch weiter zu untersuchenden
+Bildschirme</span> in der Warteschlange an, die dritte Zahl, <span style="color:orange;background-color:black">wieviele
+unterschiedliche Bildschirme schon abgearbeitet wurden</span>.
+
+![PUPU](image/infos.png)
+
+Am Ende wird der gefundene Lösungsweg angezeigt. Außerdem wird die Lösung in eine Datei `.sol` geschrieben, die später
+mit dem Parameter `-s` wieder geladen werden kann, ohne die gesamte Berechnung wieder durchführen zu müssen.
 
 ![PUPU-Solver](image/solver.png)
 
