@@ -105,4 +105,26 @@ options:
   -s FILE     Display already calculated solution
   -d          debug
   -f          Show the first found solution
-              (otherwise the shortest of all possible solutions is shown)```
+              (otherwise the shortest of all possible solutions is shown)
+```
+
+## Installieren der Voraussetzungen
+
+### Windows
+
+* Download von Python von der [Webseite](https://www.python.org/)
+* Installation mit aktivierter Checkbox bei `PIP`
+![img](image/pip_windows.png)
+* Öffnen einer Kommandozeile: `WIN+R` -> `cmd`
+* Wechseln ins passende Verzeichnis: `cd ....`
+* Installation der Abhängigkeiten: `python -m pip install -r requirements.txt`
+* Starten: `python pupu_solver.py .....`
+
+### Linux
+
+Exemplarisch für Ubuntu. In anderen Distributionen analog mit dem entsprechenden Paketmanager
+* APT-Datenbank aktualisieren: `apt update`
+* Installation von Python: `pip install python3 python3-pip`
+* Wechseln ins passende Verzeichnis: `cd ....`
+* Installation der Abhängigkeiten: `pip3 install -r requirements.txt`
+* Starten: `python3 pupu_solver.py .....`
